@@ -6,5 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(SOURCE_FILES
         main.cpp
         Perceptron.cpp
-        Perceptron.h)
+        Perceptron.h
+        Network.cpp
+        Network.h
+        )
 add_executable(Perceptron ${SOURCE_FILES})
