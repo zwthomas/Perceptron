@@ -22,3 +22,42 @@ void Perceptron::displayWeights() {
     }
     cout << endl;
 }
+
+int Perceptron::eval(int *in) {
+    auto it = weights.begin();
+    int ndx = -1;
+    int val, sum = 0;
+
+    while (it != weights.end()) {
+        if (ndx == -1) {
+            val = 1;
+        } else {
+            val = in[ndx];
+        }
+        ndx++;
+
+        sum += (*it++) * val;
+    }
+    if (sum > 0) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+void Perceptron::adjust(double learningRate, int output, int correctOutput, int *in) {
+    auto it = weights.begin();
+    int ndx = -1, val;
+
+    while (it != weights.end()) {
+        if (ndx == -1) {
+            val = 1;
+        } else {
+            val = in[ndx];
+        }
+        ndx++;
+
+        (*it++) += learningRate * (correctOutput - output) * val;
+    }
+}
+

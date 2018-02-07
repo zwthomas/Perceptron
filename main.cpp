@@ -12,11 +12,14 @@ int* readOutput(string fileName, int cases);
 int main() {
     srand(time(NULL));
     int numNodes[1] = {1};
-    Network net = Network(2, numNodes, 2);
+    Network net = Network(1, numNodes, 2);
     //net.displayNetwork();
 
     int **inputs = readInputs("LogicInput.txt", 4, 2);
     int *outputs = readOutput("andOutput.txt", 4);
+    string f = "and";
+    net.feedForward(inputs, outputs, 4, 2, f);
+
 }
 
 
@@ -46,9 +49,9 @@ int *readOutput(string fileName, int cases) {
         fileOutputs >> output[row];
     }
 
-    for (int row = 0; row < cases; row++) {
-        cout << output[row] << endl;
-    }
+//    for (int row = 0; row < cases; row++) {
+//        cout << output[row] << endl;
+//    }
 
-    return nullptr;
+    return output;
 }

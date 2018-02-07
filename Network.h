@@ -7,12 +7,14 @@
 
 #include "Perceptron.h"
 #include <list>
+#include <string>
 
 class Network {
 public:
     Network(int numLayers, int numNodes[], int numInputs);
     ~Network();
     void displayNetwork();
+    void feedForward(int **inputs, int *outputs, int cases, int numInputs, std::string file);
 
 protected:
 
