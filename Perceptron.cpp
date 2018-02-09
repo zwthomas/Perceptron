@@ -9,7 +9,7 @@
 using namespace std;
 
 Perceptron::Perceptron(int inputs) {
-
+    //TODO: regen if really close to zero
     for (int count = 0; count < inputs + 1; count++) {
         weights.push_back(((double) rand()/RAND_MAX) * 2 - 1);
     }

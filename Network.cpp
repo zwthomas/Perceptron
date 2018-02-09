@@ -40,6 +40,8 @@ void Network::displayNetwork() {
 }
 
 void Network::feedForward(int **inputs, int *outputs, int cases, int numInputs, string file) {
+    DEBUG_PRINT("TESTING")
+    return;
     cout << "Here 1" << endl;
     int val;
     double lr = 1;
@@ -47,10 +49,12 @@ void Network::feedForward(int **inputs, int *outputs, int cases, int numInputs, 
         cout << "\nROW: " << row << endl;
         for (int layer = 0; layer < NUM_LAYERS; layer++) {
             cout << "Layer: " << layer << endl;
+
             auto it = LAYERS[layer].begin();
             it->displayWeights();
             val = it->eval(inputs[row]);
             cout << "VAL: " << val << endl;
+
             if (val != outputs[row]) {
                 cout << "Invalid output: " << val << " " << outputs[row] << endl;
                 it->adjust(lr, val, outputs[row],inputs[row]);

@@ -5,6 +5,17 @@
 #ifndef PERCEPTRON_PERCEPTRON_H
 #define PERCEPTRON_PERCEPTRON_H
 #include <list>
+
+#define DEBUG_MODE
+
+#ifdef DEBUG_MODE
+#define DEBUG_PRINT(message) {\
+    cout << message << endl;   \
+}
+#else
+#define DEBUG_PRINT(message) {}
+#endif
+
 class Perceptron {
 public:
     explicit Perceptron(int inputs);
