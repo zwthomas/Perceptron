@@ -23,20 +23,13 @@ void Perceptron::displayWeights() {
     cout << endl;
 }
 
-int Perceptron::eval(int *in) {
-    auto it = weights.begin();
-    int ndx = -1;
-    int val, sum = 0;
+int Perceptron::eval(list<int> *in) {
+    auto w = weights.begin();
+    auto input = in->begin();
+    int sum = 0;
 
-    while (it != weights.end()) {
-        if (ndx == -1) {
-            val = 1;
-        } else {
-            val = in[ndx];
-        }
-        ndx++;
-
-        sum += (*it++) * val;
+    while (w != weights.end()) {
+        sum += (*w++) * (*input++);
     }
     if (sum > 0) {
         return 1;

@@ -12,9 +12,9 @@
 class Network {
 public:
     Network(int numLayers, int numNodes[], int numInputs);
-    ~Network();
+    //~Network();
     void displayNetwork();
-    void feedForward(int **inputs, int *outputs, int cases, int numInputs, std::string file);
+    void feedForward(int **inputs, int **outputs, int cases, int numInputs, int outputNum, std::string file);
 
 protected:
 
@@ -23,6 +23,8 @@ private:
     int NUM_LAYERS;
     int *NUM_NODES;
     int NUM_INPUTS;
+    std::list<int>* fillInputs(int **inputs, int row, int numInputs);
+    bool checkOutputs(std::list<int> *generatedOutputs, int **correctOutputs, int caseNum, int numOutputs);
 
 };
 

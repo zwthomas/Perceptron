@@ -4,54 +4,75 @@
 #include <iostream>
 #include <fstream>
 #include "Network.h"
+
+#define CASES 4
+#define NUM_IN 2
+#define NUM_OUT 1
 using namespace std;
 
+
+
 int** readInputs(string fileName, int cases, int numInputs);
-int* readOutput(string fileName, int cases);
+int** readOutput(string fileName, int cases, int numOutputs);
 
 int main() {
     srand(time(NULL));
-    int numNodes[1] = {1};
-    Network net = Network(1, numNodes, 2);
+    int numNodes[] = {3,3};
+    Network net = Network(2, numNodes, 2);
     //net.displayNetwork();
 
-    int **inputs = readInputs("LogicInput.txt", 4, 2);
-    int *outputs = readOutput("andOutput.txt", 4);
-    string f = "and";
-    net.feedForward(inputs, outputs, 4, 2, f);
+    int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
+    int **outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
+//    string f = "and";
+//    net.feedForward(inputs, outputs, 4, 2, f);
 
 }
 
-
+/**
+ * Reads the input from a file and saves it to a 2d array.
+ *
+ * @param fileName      File to be read from
+ * @param cases         Number of lines in the file
+ * @param numInputs     Number of inputs in each line
+ * @return              2d array of the input
+ */
 int** readInputs(string fileName, int cases, int numInputs) {
-    int **inputs =  new int*[cases];
-    for (int i = 0; i < cases; i++) {
+    int **inputs =  new int*[cases];        // Creates the rows of the table
+    for (int i = 0; i < cases; i++) {       // Creates space for the inputs in each row
         inputs[i] = new int[numInputs];
     }
 
-    ifstream fileInputs;
+    ifstream fileInputs;                    // Open the file
     fileInputs.open(fileName, ios::in);
 
-    for (int row = 0; row < cases; row++) {
+    for (int row = 0; row < cases; row++) {     // Fill input table
         for (int col = 0; col < numInputs; col++) {
             fileInputs >> inputs[row][col];
         }
     }
-
     return inputs;
 }
 
-int *readOutput(string fileName, int cases) {
-    int *output = new int[cases];
+/**
+ * Reads the desired outputs from a file and saves it.
+ *
+ * @param fileName File containing the outputs
+ * @param cases     The number of lines of output
+ *
+ * @return array contianing the input
+ */
+int** readOutput(string fileName, int cases, int numOutput) {
+    int **output = new int*[cases];
+    for (int i = 0; i < cases; i++) {       // Creates space for the inputs in each row
+        output[i] = new int[numOutput];
+    }
     ifstream fileOutputs;
     fileOutputs.open(fileName, ios::in);
     for (int row = 0; row < cases; row++) {
-        fileOutputs >> output[row];
+        for (int col = 0; col < numOutput; col++) {
+            fileOutputs >> output[row][col];
+        }
     }
-
-//    for (int row = 0; row < cases; row++) {
-//        cout << output[row] << endl;
-//    }
 
     return output;
 }
