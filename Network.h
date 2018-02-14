@@ -25,6 +25,7 @@ private:
     int NUM_INPUTS;
     std::list<int>* fillInputs(int **inputs, int row, int numInputs);
     bool checkOutputs(std::list<int> *generatedOutputs, int **correctOutputs, int caseNum, int numOutputs);
+    void adjustLayers(int numCase, int **output, std::list<int> *generatedOutputs, int learningRate);
 
 };
 

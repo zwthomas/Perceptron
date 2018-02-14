@@ -69,7 +69,6 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
 
 
     }
-
 }
 
 /**
@@ -99,6 +98,18 @@ bool Network::checkOutputs(std::list<int> *generatedOutputs, int **correctOutput
         }
     }
     return true;
+}
+
+void Network::adjustLayers(int numCase, int **output, std::list<int> *generatedOutputs, int learningRate) {
+    for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
+
+        auto percep = LAYERS[layer].begin();                // Pass input to all nodes in the layer
+        while(percep != LAYERS[layer].end()) {
+            //percep->adjust(learningRate, output[])
+            percep++;
+        }
+
+    }
 }
 
 
