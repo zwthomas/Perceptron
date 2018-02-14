@@ -20,8 +20,8 @@ class Perceptron {
 public:
     explicit Perceptron(int inputs);
     void displayWeights();
-    int eval(std::list<int> *in);
-    void adjust(double learningRate, int output, int correctOutput, int *in);
+    double eval(std::list<int> *in);
+    void adjust(double learningRate, int numOutput, int *output, std::list<int> *generatedOutput);
 protected:
 
 private:

@@ -25,9 +25,9 @@ Network::Network(int numLayers, int numNodes[], int numInputs) {
     }
 }
 
-//Network::~Network() {
-//    delete(LAYERS);
-//}
+Network::~Network() {
+    delete[] LAYERS;
+}
 
 void Network::displayNetwork() {
     for (int layer = 0; layer < NUM_LAYERS; layer++) {
@@ -61,13 +61,10 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
             ins = tempOuts;
         }
         if (!checkOutputs(ins, outputs, row, outputNum)) {
-            ///
-            // need to adjust
-            ///
+            adjustLayers(outputs[row],inputs[row],ins, lr, outputNum);
+            lr *= .9;
             row = -1;
         }
-
-
     }
 }
 
@@ -100,12 +97,12 @@ bool Network::checkOutputs(std::list<int> *generatedOutputs, int **correctOutput
     return true;
 }
 
-void Network::adjustLayers(int numCase, int **output, std::list<int> *generatedOutputs, int learningRate) {
+void Network::adjustLayers(int *output, int *input, std::list<int> *generatedOutputs, int learningRate, int numOutput) {
     for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
 
-        auto percep = LAYERS[layer].begin();                // Pass input to all nodes in the layer
+        auto percep = LAYERS[layer].begin();                // Go through each of the nodes in each layer
         while(percep != LAYERS[layer].end()) {
-            //percep->adjust(learningRate, output[])
+            percep->adjust(learningRate, numOutput, output, generatedOutputs);
             percep++;
         }
 

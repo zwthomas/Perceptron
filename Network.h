@@ -12,20 +12,21 @@
 class Network {
 public:
     Network(int numLayers, int numNodes[], int numInputs);
-    //~Network();
+    ~Network();
     void displayNetwork();
     void feedForward(int **inputs, int **outputs, int cases, int numInputs, int outputNum, std::string file);
 
 protected:
 
 private:
+    Network(){};
     std::list<Perceptron> *LAYERS;
     int NUM_LAYERS;
     int *NUM_NODES;
     int NUM_INPUTS;
     std::list<int>* fillInputs(int **inputs, int row, int numInputs);
     bool checkOutputs(std::list<int> *generatedOutputs, int **correctOutputs, int caseNum, int numOutputs);
-    void adjustLayers(int numCase, int **output, std::list<int> *generatedOutputs, int learningRate);
+    void adjustLayers(int *output, int *input, std::list<int> *generatedOutputs, int learningRate, int numOutput);
 
 };
 

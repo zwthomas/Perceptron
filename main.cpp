@@ -8,6 +8,8 @@
 #define CASES 4
 #define NUM_IN 2
 #define NUM_OUT 1
+
+#define NUM_LAYERS 1
 using namespace std;
 
 
@@ -16,15 +18,16 @@ int** readInputs(string fileName, int cases, int numInputs);
 int** readOutput(string fileName, int cases, int numOutputs);
 
 int main() {
+    int NUM_NODES[] = {1};
     srand(time(NULL));
-    int numNodes[] = {3,3};
-    Network net = Network(2, numNodes, 2);
+    Network net = Network(NUM_LAYERS, NUM_NODES, NUM_IN);
     //net.displayNetwork();
 
     int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
     int **outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
-//    string f = "and";
-//    net.feedForward(inputs, outputs, 4, 2, f);
+    string f = "and";
+    net.feedForward(inputs, outputs, CASES, NUM_IN, NUM_OUT, f);
+    net.displayNetwork();
 
 }
 

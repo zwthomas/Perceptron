@@ -23,10 +23,10 @@ void Perceptron::displayWeights() {
     cout << endl;
 }
 
-int Perceptron::eval(list<int> *in) {
+double Perceptron::eval(list<int> *in) {
     auto w = weights.begin();
     auto input = in->begin();
-    int sum = 0;
+    double sum = 0;
 
     while (w != weights.end()) {
         sum += (*w++) * (*input++);
@@ -38,19 +38,16 @@ int Perceptron::eval(list<int> *in) {
     }
 }
 
-void Perceptron::adjust(double learningRate, int output, int correctOutput, int *in) {
-    auto it = weights.begin();
-    int ndx = -1, val;
+void Perceptron::adjust(double learningRate, int numOutput, int *output, list<int> *generatedOutput) {
+    auto weightIt = weights.begin();
+    list<int>::iterator outputIt;
 
-    while (it != weights.end()) {
-        if (ndx == -1) {
-            val = 1;
-        } else {
-            val = in[ndx];
+    while (weightIt != weights.end()) {
+        outputIt = generatedOutput->begin();
+        for (int ndx = 0; ndx < numOutput; ndx++) {
+            (*weightIt) += learningRate * (output[ndx] - (*outputIt++)) * (*weightIt);
         }
-        ndx++;
-
-        (*it++) += learningRate * (correctOutput - output) * val;
+        weightIt++;
     }
 }
 
