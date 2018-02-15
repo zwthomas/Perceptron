@@ -11,7 +11,15 @@ using namespace std;
 Perceptron::Perceptron(int inputs) {
     //TODO: regen if really close to zero
     for (int count = 0; count < inputs + 1; count++) {
-        weights.push_back(((double) rand()/RAND_MAX) * 2 - 1);
+        double weight = ((double) rand()/RAND_MAX) * 2 - 1;
+        if (weight < 0 && weight > -1.0e-5) {
+            count--;
+            continue;
+        } else if (weight > 0 && weight < 1.0e-5) {
+            count--;
+            continue;
+        }
+        weights.push_back(weight);
     }
 }
 
@@ -23,7 +31,7 @@ void Perceptron::displayWeights() {
     cout << endl;
 }
 
-double Perceptron::eval(list<int> *in) {
+double Perceptron::eval(list<double> *in) {
     auto w = weights.begin();
     auto input = in->begin();
     double sum = 0;
@@ -38,9 +46,9 @@ double Perceptron::eval(list<int> *in) {
     }
 }
 
-void Perceptron::adjust(double learningRate, int numOutput, int *output, list<int> *generatedOutput) {
+void Perceptron::adjust(double learningRate, int numOutput, double *output, list<double> *generatedOutput) {
     auto weightIt = weights.begin();
-    list<int>::iterator outputIt;
+    list<double>::iterator outputIt;
 
     while (weightIt != weights.end()) {
         outputIt = generatedOutput->begin();

@@ -14,8 +14,8 @@ using namespace std;
 
 
 
-int** readInputs(string fileName, int cases, int numInputs);
-int** readOutput(string fileName, int cases, int numOutputs);
+double** readInputs(string fileName, int cases, int numInputs);
+double** readOutput(string fileName, int cases, int numOutputs);
 
 int main() {
     int NUM_NODES[] = {1};
@@ -23,8 +23,8 @@ int main() {
     Network net = Network(NUM_LAYERS, NUM_NODES, NUM_IN);
     //net.displayNetwork();
 
-    int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
-    int **outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
+    double **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
+    double **outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
     string f = "and";
     net.feedForward(inputs, outputs, CASES, NUM_IN, NUM_OUT, f);
     net.displayNetwork();
@@ -39,10 +39,10 @@ int main() {
  * @param numInputs     Number of inputs in each line
  * @return              2d array of the input
  */
-int** readInputs(string fileName, int cases, int numInputs) {
-    int **inputs =  new int*[cases];        // Creates the rows of the table
+double** readInputs(string fileName, int cases, int numInputs) {
+    auto **inputs =  new double*[cases];        // Creates the rows of the table
     for (int i = 0; i < cases; i++) {       // Creates space for the inputs in each row
-        inputs[i] = new int[numInputs];
+        inputs[i] = new double[numInputs];
     }
 
     ifstream fileInputs;                    // Open the file
@@ -64,10 +64,10 @@ int** readInputs(string fileName, int cases, int numInputs) {
  *
  * @return array contianing the input
  */
-int** readOutput(string fileName, int cases, int numOutput) {
-    int **output = new int*[cases];
+double** readOutput(string fileName, int cases, int numOutput) {
+    double **output = new double*[cases];
     for (int i = 0; i < cases; i++) {       // Creates space for the inputs in each row
-        output[i] = new int[numOutput];
+        output[i] = new double[numOutput];
     }
     ifstream fileOutputs;
     fileOutputs.open(fileName, ios::in);

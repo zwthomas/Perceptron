@@ -40,16 +40,17 @@ void Network::displayNetwork() {
     }
 }
 
-void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs, int outputNum, string file) {
-    int val;
+void Network::feedForward(double **inputs, double **outputs, int cases, int numInputs, int outputNum, string file) {
+    displayNetwork();
+
     double lr = 1;
-    list<int> *ins;
-    list<int> *tempOuts;
+    list<double> *ins;
+    list<double> *tempOuts;
 
     for (int row = 0; row < cases; row++) {                     // Passes in each row of input
         ins = fillInputs(inputs, row, numInputs);
         for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
-            tempOuts = new list<int>;
+            tempOuts = new list<double>;
             tempOuts->push_back(1);                             // Bias
 
             auto percep = LAYERS[layer].begin();                // Pass input to all nodes in the layer
@@ -61,6 +62,7 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
             ins = tempOuts;
         }
         if (!checkOutputs(ins, outputs, row, outputNum)) {
+            printf("RESET\n");
             adjustLayers(outputs[row],inputs[row],ins, lr, outputNum);
             lr *= .9;
             row = -1;
@@ -76,8 +78,8 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
  * @param numInputs Number of inputs in that row
  * @return  the inputs for that row in a list
  */
-std::list<int> *Network::fillInputs(int **inputs, int row, int numInputs) {
-    list<int> *inList = new list<int>();
+std::list<double> *Network::fillInputs(double **inputs, int row, int numInputs) {
+    auto *inList = new list<double>();
     inList->push_back(1);
     for (int col = 0; col < numInputs; col++) {
         inList->push_back(inputs[row][col]);
@@ -85,11 +87,12 @@ std::list<int> *Network::fillInputs(int **inputs, int row, int numInputs) {
     return inList;
 }
 
-bool Network::checkOutputs(std::list<int> *generatedOutputs, int **correctOutputs, int caseNum, int numOutputs) {
+bool Network::checkOutputs(std::list<double> *generatedOutputs, double **correctOutputs, int caseNum, int numOutputs) {
     auto it = generatedOutputs->begin();
     it++;                                           // Skip the bias
 
     for (int ndx = 0; ndx < numOutputs; ndx++) {
+        printf("CHECKING: %f   %f\n", (*it), correctOutputs[caseNum][ndx]);
         if ((*it++) != correctOutputs[caseNum][ndx]) {
             return false;
         }
@@ -97,7 +100,8 @@ bool Network::checkOutputs(std::list<int> *generatedOutputs, int **correctOutput
     return true;
 }
 
-void Network::adjustLayers(int *output, int *input, std::list<int> *generatedOutputs, int learningRate, int numOutput) {
+
+void Network::adjustLayers(double *output, double *input, std::list<double> *generatedOutputs, double learningRate, int numOutput) {
     for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
 
         auto percep = LAYERS[layer].begin();                // Go through each of the nodes in each layer

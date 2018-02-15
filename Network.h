@@ -14,19 +14,18 @@ public:
     Network(int numLayers, int numNodes[], int numInputs);
     ~Network();
     void displayNetwork();
-    void feedForward(int **inputs, int **outputs, int cases, int numInputs, int outputNum, std::string file);
+    void feedForward(double **inputs, double **outputs, int cases, int numInputs, int outputNum, std::string file);
 
 protected:
 
 private:
-    Network(){};
     std::list<Perceptron> *LAYERS;
     int NUM_LAYERS;
     int *NUM_NODES;
     int NUM_INPUTS;
-    std::list<int>* fillInputs(int **inputs, int row, int numInputs);
-    bool checkOutputs(std::list<int> *generatedOutputs, int **correctOutputs, int caseNum, int numOutputs);
-    void adjustLayers(int *output, int *input, std::list<int> *generatedOutputs, int learningRate, int numOutput);
+    std::list<double>* fillInputs(double **inputs, int row, int numInputs);
+    bool checkOutputs(std::list<double> *generatedOutputs, double **correctOutputs, int caseNum, int numOutputs);
+    void adjustLayers(double *output, double *input, std::list<double> *generatedOutputs, double learningRate, int numOutput);
 
 };
 
