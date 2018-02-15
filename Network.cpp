@@ -40,30 +40,40 @@ void Network::displayNetwork() {
     }
 }
 
-void Network::feedForward(double **inputs, double **outputs, int cases, int numInputs, int outputNum, string file) {
+void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs, int outputNum, string file) {
+    printf("IN Feed Forward\n");
     displayNetwork();
 
-    double lr = 1;
-    list<double> *ins;
-    list<double> *tempOuts;
+
+    double lr = .9;
+    list<int> *ins;
+    list<int> *tempOuts;
 
     for (int row = 0; row < cases; row++) {                     // Passes in each row of input
-        ins = fillInputs(inputs, row, numInputs);
+        //printf("CASE: %i\n", row);
+        ins = fillInputs(inputs[row], numInputs);
         for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
-            tempOuts = new list<double>;
+            tempOuts = new list<int>;
             tempOuts->push_back(1);                             // Bias
 
             auto percep = LAYERS[layer].begin();                // Pass input to all nodes in the layer
             while(percep != LAYERS[layer].end()) {
-                tempOuts->push_back(percep->eval(ins));         // Save the outputs for the input to the next row or final output
+                int eval = percep->eval(ins);
+                //printf("EVAL = %i\n", eval);
+                tempOuts->push_back(eval);         // Save the outputs for the input to the next row or final output
                 percep++;
             }
             delete(ins);
             ins = tempOuts;
         }
-        if (!checkOutputs(ins, outputs, row, outputNum)) {
-            printf("RESET\n");
-            adjustLayers(outputs[row],inputs[row],ins, lr, outputNum);
+        if (!checkOutputs(ins, outputs[row], outputNum)) {
+//            printf("\n\nRESET\n");
+//            printf("BEFORE\n");
+//            displayNetwork();
+            adjustLayers(outputs[row],ins, lr, outputNum);
+//            printf("AFTER\n");
+//            displayNetwork();
+//            exit(1);
             lr *= .9;
             row = -1;
         }
@@ -78,22 +88,22 @@ void Network::feedForward(double **inputs, double **outputs, int cases, int numI
  * @param numInputs Number of inputs in that row
  * @return  the inputs for that row in a list
  */
-std::list<double> *Network::fillInputs(double **inputs, int row, int numInputs) {
-    auto *inList = new list<double>();
+std::list<int> *Network::fillInputs(int *inputs, int numInputs) {
+    auto *inList = new list<int>();
     inList->push_back(1);
     for (int col = 0; col < numInputs; col++) {
-        inList->push_back(inputs[row][col]);
+        inList->push_back(inputs[col]);
     }
     return inList;
 }
 
-bool Network::checkOutputs(std::list<double> *generatedOutputs, double **correctOutputs, int caseNum, int numOutputs) {
+bool Network::checkOutputs(std::list<int> *generatedOutputs, int *correctOutputs, int numOutputs) {
     auto it = generatedOutputs->begin();
     it++;                                           // Skip the bias
-
+    //printf("OUTPUT NUM: %i\n", numOutputs);
     for (int ndx = 0; ndx < numOutputs; ndx++) {
-        printf("CHECKING: %f   %f\n", (*it), correctOutputs[caseNum][ndx]);
-        if ((*it++) != correctOutputs[caseNum][ndx]) {
+        //printf("CHECKING: %i   %i\n", (*it), correctOutputs[ndx]);
+        if ((*it++) != correctOutputs[ndx]) {
             return false;
         }
     }
@@ -101,11 +111,12 @@ bool Network::checkOutputs(std::list<double> *generatedOutputs, double **correct
 }
 
 
-void Network::adjustLayers(double *output, double *input, std::list<double> *generatedOutputs, double learningRate, int numOutput) {
+void Network::adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput) {
     for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
 
         auto percep = LAYERS[layer].begin();                // Go through each of the nodes in each layer
         while(percep != LAYERS[layer].end()) {
+            //printf("ADJUSTING\n");
             percep->adjust(learningRate, numOutput, output, generatedOutputs);
             percep++;
         }

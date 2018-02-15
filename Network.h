@@ -14,7 +14,7 @@ public:
     Network(int numLayers, int numNodes[], int numInputs);
     ~Network();
     void displayNetwork();
-    void feedForward(double **inputs, double **outputs, int cases, int numInputs, int outputNum, std::string file);
+    void feedForward(int **inputs, int **outputs, int cases, int numInputs, int outputNum, std::string file);
 
 protected:
 
@@ -23,9 +23,9 @@ private:
     int NUM_LAYERS;
     int *NUM_NODES;
     int NUM_INPUTS;
-    std::list<double>* fillInputs(double **inputs, int row, int numInputs);
-    bool checkOutputs(std::list<double> *generatedOutputs, double **correctOutputs, int caseNum, int numOutputs);
-    void adjustLayers(double *output, double *input, std::list<double> *generatedOutputs, double learningRate, int numOutput);
+    std::list<int>* fillInputs(int *inputs, int numInputs);
+    bool checkOutputs(std::list<int> *generatedOutputs, int *correctOutputs, int numOutputs);
+    void adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput);
 
 };
 

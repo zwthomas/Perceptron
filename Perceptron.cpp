@@ -31,7 +31,7 @@ void Perceptron::displayWeights() {
     cout << endl;
 }
 
-double Perceptron::eval(list<double> *in) {
+int Perceptron::eval(list<int> *in) {
     auto w = weights.begin();
     auto input = in->begin();
     double sum = 0;
@@ -46,15 +46,19 @@ double Perceptron::eval(list<double> *in) {
     }
 }
 
-void Perceptron::adjust(double learningRate, int numOutput, double *output, list<double> *generatedOutput) {
+void Perceptron::adjust(double learningRate, int numOutput, int *output, list<int> *generatedOutput) {
     auto weightIt = weights.begin();
-    list<double>::iterator outputIt;
+    list<int>::iterator outputIt;
 
     while (weightIt != weights.end()) {
         outputIt = generatedOutput->begin();
+        outputIt++;
         for (int ndx = 0; ndx < numOutput; ndx++) {
-            (*weightIt) += learningRate * (output[ndx] - (*outputIt++)) * (*weightIt);
+            //printf("lr = %f, cout = %i, genOut = %i, weight = %f\n", learningRate, output[ndx], *outputIt, *weightIt);
+            //printf("ADDING: %f\n",learningRate * (double) (output[ndx] - (*outputIt)) * (*weightIt));
+            (*weightIt) +=  learningRate * (double) (output[ndx] - (*outputIt++)) * (*weightIt);
         }
+        //printf("\n\nNODE AFTER CHANGE: %f\n\n", *weightIt);
         weightIt++;
     }
 }
