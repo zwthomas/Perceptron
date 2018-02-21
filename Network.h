@@ -15,7 +15,7 @@ public:
     ~Network();
     void displayNetwork();
     void feedForward(int **inputs, int **outputs, int cases, int numInputs, int outputNum, std::string file);
-
+    void setWeight(int col, int row, double w[]);
 protected:
 
 private:
@@ -26,6 +26,7 @@ private:
     std::list<int>* fillInputs(int *inputs, int numInputs);
     bool checkOutputs(std::list<int> *generatedOutputs, int *correctOutputs, int numOutputs);
     void adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput);
+
 
 };
 

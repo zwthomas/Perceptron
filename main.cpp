@@ -1,6 +1,8 @@
-//
-// Created by Zach on 2/2/2018.
-//
+/*
+ * Zachary Thomas
+ * 2/6/2018
+ * Perceptron network to evaluate binary expressions
+ */
 #include <iostream>
 #include <fstream>
 #include "Network.h"
@@ -17,15 +19,22 @@ using namespace std;
 int** readInputs(string fileName, int cases, int numInputs);
 int** readOutput(string fileName, int cases, int numOutputs);
 
-int main() {
+int main(int argc, char *argv[]) {
     int NUM_NODES[] = {1};
     srand(time(NULL));
     Network net = Network(NUM_LAYERS, NUM_NODES, NUM_IN);
-    //net.displayNetwork();
+    string f = "and";
 
     int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
     int **outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
-    string f = "and";
+//    if (argv[0] == "and") {
+//        outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
+//    } else if (argv[0] == "or") {
+//        outputs = readOutput("orOutput.txt", CASES, NUM_OUT);
+//    }
+
+//    double test[] = {-.8,.5,.5};
+//    net.setWeight(0,0, test);
     net.feedForward(inputs, outputs, CASES, NUM_IN, NUM_OUT, f);
     net.displayNetwork();
 

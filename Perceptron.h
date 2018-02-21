@@ -22,6 +22,7 @@ public:
     void displayWeights();
     int eval(std::list<int> *in);
     void adjust(double learningRate, int numOutput, int *output, std::list<int> *generatedOutput);
+    void setWeights(double w[]);
 protected:
 
 private:
