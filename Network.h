@@ -25,7 +25,7 @@ private:
     int NUM_INPUTS;
     std::list<int>* fillInputs(int *inputs, int numInputs);
     bool checkOutputs(std::list<int> *generatedOutputs, int *correctOutputs, int numOutputs);
-    void adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput);
+    void adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput, int *input);
 
 
 };

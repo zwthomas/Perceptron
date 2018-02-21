@@ -51,9 +51,11 @@ int Perceptron::eval(list<int> *in) {
     auto input = in->begin();
     double sum = 0;
     while (w != weights.end()) {            // Sums the weights times the inputs
+        DEBUG_PRINT("WEIGHT: " << (*w) << " INPUT: " << (*input));
         sum += (*w++) * (*input++);
     }
 
+    DEBUG_PRINT("SUM: " << sum)
     if (sum > 0) {
         return 1;
     } else {
@@ -69,15 +71,26 @@ int Perceptron::eval(list<int> *in) {
  * @param output                Correct output
  * @param generatedOutput       Gen output
  */
-void Perceptron::adjust(double learningRate, int numOutput, int *output, list<int> *generatedOutput) {
+void Perceptron::adjust(double learningRate, int numOutput, int *output, list<int> *generatedOutput, int *input) {
+    DEBUG_PRINT("ENTERED ADJUST \nLR: " << learningRate << " NUMOUT: " << numOutput)
     auto weightIt = weights.begin();
     list<int>::iterator outputIt;
-
+    int ndx = 0;
+    int in;
     while (weightIt != weights.end()) {             // For each of the weights
         outputIt = generatedOutput->begin();
         outputIt++;
+
+        if (ndx == 0) {
+            in = 1;
+        } else {
+            in = input[ndx - 1];
+        }
+        ndx++;
+
         for (int ndx = 0; ndx < numOutput; ndx++) { // Adjust for each of the outputs
-            (*weightIt) +=  learningRate * (double) (output[ndx] - (*outputIt++)) * (*weightIt);
+            DEBUG_PRINT("LR: " << learningRate << " CORRECTOUT: " << output[ndx] <<  " GENOUT: " << (*outputIt) << " input: " << in)
+            (*weightIt) +=  learningRate * (double) (output[ndx] - (*outputIt++)) * (in);
         }
         weightIt++;
     }

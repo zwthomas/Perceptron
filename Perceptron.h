@@ -12,8 +12,10 @@
 #define DEBUG_PRINT(message) {\
     cout << message << endl;   \
 }
+#define DEBUG_EVAL(s) {s}
 #else
 #define DEBUG_PRINT(message) {}
+#define DEBUG_EVAL(s) {s}
 #endif
 
 class Perceptron {
@@ -21,7 +23,7 @@ public:
     explicit Perceptron(int inputs);
     void displayWeights();
     int eval(std::list<int> *in);
-    void adjust(double learningRate, int numOutput, int *output, std::list<int> *generatedOutput);
+    void adjust(double learningRate, int numOutput, int *output, std::list<int> *generatedOutput, int *input);
     void setWeights(double w[]);
 protected:
 

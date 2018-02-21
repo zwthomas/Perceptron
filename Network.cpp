@@ -67,6 +67,9 @@ void Network::displayNetwork() {
  * @param file      Filename to save the weights to
  */
 void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs, int outputNum, string file) {
+    DEBUG_PRINT("Entering feed")
+    DEBUG_EVAL(displayNetwork();)
+
     double lr = .1;
     list<int> *ins;
     list<int> *tempOuts;
@@ -88,9 +91,10 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
             ins = tempOuts;
         }
         if (!checkOutputs(ins, outputs[row], outputNum)) {      // If the output is wrong adjust weights and start over
-            adjustLayers(outputs[row],ins, lr, outputNum);\
+            DEBUG_PRINT("Adjusting");
+            adjustLayers(outputs[row],ins, lr, outputNum, inputs[row]);\
             displayNetwork();
-            //sleep(2);
+            sleep(2);
             //lr *= .9;
             row = -1;
         }
@@ -143,12 +147,12 @@ bool Network::checkOutputs(std::list<int> *generatedOutputs, int *correctOutputs
  * @param learningRate          Multiplier to the change in the weight
  * @param numOutput             number of output
  */
-void Network::adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput) {
+void Network::adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput, int *input) {
     for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Goes through all Layers
 
         auto percep = LAYERS[layer].begin();                // Goes through each of the nodes in each layer
         while(percep != LAYERS[layer].end()) {
-            percep->adjust(learningRate, numOutput, output, generatedOutputs);
+            percep->adjust(learningRate, numOutput, output, generatedOutputs, input);
             percep++;
         }
 

@@ -27,6 +27,7 @@ int main(int argc, char *argv[]) {
 
     int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
     int **outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
+
 //    if (argv[0] == "and") {
 //        outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
 //    } else if (argv[0] == "or") {
@@ -62,6 +63,16 @@ int** readInputs(string fileName, int cases, int numInputs) {
             fileInputs >> inputs[row][col];
         }
     }
+
+//    cout << "\nINPUT" << endl;
+//    for (int row = 0; row < cases; row++) {     // Fill input table
+//        for (int col = 0; col < numInputs; col++) {
+//            cout << inputs[row][col] << " " ;
+//        }
+//        cout << endl;
+//    }
+//    cout << endl;
+
     return inputs;
 }
 
@@ -86,5 +97,13 @@ int** readOutput(string fileName, int cases, int numOutput) {
         }
     }
 
+//    cout << "\nout" << endl;
+//    for (int row = 0; row < cases; row++) {
+//        for (int col = 0; col < numOutput; col++) {
+//            cout <<  output[row][col] << " ";
+//        }
+//        cout << endl;
+//    }
+//    cout << endl;
     return output;
 }
