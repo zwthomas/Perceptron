@@ -75,7 +75,6 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
     list<int> *tempOuts;
 
     for (int row = 0; row < cases; row++) {                     // Passes in each row of input
-        cout<< "HERE" << endl;
         ins = fillInputs(inputs[row], numInputs);
         for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
             tempOuts = new list<int>;
@@ -93,7 +92,7 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
         if (!checkOutputs(ins, outputs[row], outputNum)) {      // If the output is wrong adjust weights and start over
             DEBUG_PRINT("Adjusting");
             adjustLayers(outputs[row],ins, lr, outputNum, inputs[row]);\
-            displayNetwork();
+            //displayNetwork();
             //sleep(2);
             lr *= .9;
             row = -1;
