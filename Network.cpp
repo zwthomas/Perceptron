@@ -94,8 +94,8 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
             DEBUG_PRINT("Adjusting");
             adjustLayers(outputs[row],ins, lr, outputNum, inputs[row]);\
             displayNetwork();
-            sleep(2);
-            //lr *= .9;
+            //sleep(2);
+            lr *= .9;
             row = -1;
         }
         delete(ins);

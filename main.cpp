@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include "Network.h"
+#include <string.h>
 
 #define CASES 4
 #define NUM_IN 2
@@ -26,12 +27,17 @@ int main(int argc, char *argv[]) {
     string f = "and";
 
     int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
-    int **outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
+    int **outputs = readOutput("orOutput.txt", CASES, NUM_OUT);
 
-//    if (argv[0] == "and") {
+//    if (argv[1] == "and") {
+//        cout << "and:" << endl;
 //        outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
-//    } else if (argv[0] == "or") {
+//    } else if (argv[1] == "or") {
+//        cout << "or:" << endl;
 //        outputs = readOutput("orOutput.txt", CASES, NUM_OUT);
+//    } else {
+//        cout << "No match" <<endl;
+//        return 1;
 //    }
 
 //    double test[] = {-.8,.5,.5};
