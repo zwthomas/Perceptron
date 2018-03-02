@@ -19,20 +19,24 @@ using namespace std;
  * @param numInputs     Number of inputs going into the first layer
  */
 Network::Network(int numLayers, int numNodes[], int numInputs) {
+    cout << "Layers: " << numLayers<< endl;
     NUM_LAYERS = numLayers;
     NUM_NODES = numNodes;
     NUM_INPUTS = numInputs;
     LAYERS = new list<Perceptron>[numLayers];
     for (int layerCount = 0; layerCount < numLayers; layerCount++) {                // Creates each layer
+        cout << "\nLayer: " << layerCount << endl;
         for (int nodeCount = 0; nodeCount < numNodes[layerCount]; nodeCount++) {    // Creates each node in the layer
-            cout << "node" << endl;
+            cout << "Node: " << nodeCount << endl;
             if (layerCount == 0) {
                 Perceptron p = Perceptron(numInputs);
                 LAYERS[layerCount].push_back(p);                // Number of inputs in first layer
                                                                                     // Depends on number of inputs
                 p.displayWeights();
             } else {
-                LAYERS[layerCount].push_back(Perceptron(numNodes[layerCount - 1])); // Rest of rows depend on the previous
+                Perceptron p = Perceptron(numNodes[layerCount - 1]);
+                LAYERS[layerCount].push_back(p); // Rest of rows depend on the previous
+                p.displayWeights();
             }
         }
     }
