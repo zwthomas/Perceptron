@@ -33,11 +33,14 @@ Perceptron::Perceptron(int inputs) {
  * Displays the weights in the perceptron for debugging purposes.
  */
 void Perceptron::displayWeights() {
+    cout<< "display weights" << endl;
     list<double>::iterator it = weights.begin();
     while (it != weights.end()) {
         cout << (*it++) << " ";
     }
     cout << endl;
+
+    cout << "end of weight" << endl;
 }
 
 /**

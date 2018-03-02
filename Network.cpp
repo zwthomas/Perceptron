@@ -25,14 +25,18 @@ Network::Network(int numLayers, int numNodes[], int numInputs) {
     LAYERS = new list<Perceptron>[numLayers];
     for (int layerCount = 0; layerCount < numLayers; layerCount++) {                // Creates each layer
         for (int nodeCount = 0; nodeCount < numNodes[layerCount]; nodeCount++) {    // Creates each node in the layer
+            cout << "node" << endl;
             if (layerCount == 0) {
-                LAYERS[layerCount].push_back(Perceptron(numInputs));                // Number of inputs in first layer
+                Perceptron p = Perceptron(numInputs);
+                LAYERS[layerCount].push_back(p);                // Number of inputs in first layer
                                                                                     // Depends on number of inputs
+                p.displayWeights();
             } else {
                 LAYERS[layerCount].push_back(Perceptron(numNodes[layerCount - 1])); // Rest of rows depend on the previous
             }
         }
     }
+    cout<< "end of constructing" << endl;
 }
 
 /**
@@ -46,6 +50,7 @@ Network::~Network() {
  * Displays the weights in the network for debugging purposes.
  */
 void Network::displayNetwork() {
+    cout << "in display, num layers" << NUM_LAYERS << endl;
     for (int layer = 0; layer < NUM_LAYERS; layer++) {
         cout << "Layer " << layer + 1<<  endl;
         auto it = LAYERS[layer].begin();
@@ -54,6 +59,7 @@ void Network::displayNetwork() {
             it++->displayWeights();
         }
     }
+    cout << "out of display" << endl;
 }
 
 /**

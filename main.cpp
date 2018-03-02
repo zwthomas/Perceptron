@@ -21,24 +21,39 @@ int** readInputs(string fileName, int cases, int numInputs);
 int** readOutput(string fileName, int cases, int numOutputs);
 
 int main(int argc, char *argv[]) {
-    int NUM_NODES[] = {1};
+    string file;
+    if (argc == 2) {
+        file = argv[1];
+    } else {
+        cerr << "ERROR: Invalid number of command line arguments." << endl;
+        return 1;
+    }
+
     srand(time(NULL));
+    string f = "";
+    int NUM_NODES[] = {1};
     Network net = Network(NUM_LAYERS, NUM_NODES, NUM_IN);
-    string f = "and";
-
     int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
-    int **outputs = readOutput("orOutput.txt", CASES, NUM_OUT);
+    int **outputs;
 
-//    if (argv[1] == "and") {
-//        cout << "and:" << endl;
-//        outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
-//    } else if (argv[1] == "or") {
-//        cout << "or:" << endl;
-//        outputs = readOutput("orOutput.txt", CASES, NUM_OUT);
-//    } else {
-//        cout << "No match" <<endl;
-//        return 1;
-//    }
+    if (file == "and") {
+        cout << "and:" << endl;
+        outputs = readOutput("orOutput.txt", CASES, NUM_OUT);
+    } else if (file == "or") {
+        cout << "or:" << endl;
+        outputs = readOutput("orOutput.txt", CASES, NUM_OUT);
+    } else if (file == "xor") {
+        outputs = readOutput("xorOutput.txt", CASES, NUM_OUT);
+        int XORNODES[] = {2,1};
+        cout << "xor:" << endl;
+        net = Network(2, XORNODES, NUM_IN);
+        return 1;
+        net.displayNetwork();
+
+    } else {
+        cout << "No match" <<endl;
+        return 1;
+    }
 
 //    double test[] = {-.8,.5,.5};
 //    net.setWeight(0,0, test);
