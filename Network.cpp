@@ -57,6 +57,7 @@ void Network::displayNetwork() {
     cout << "in display, num layers" << NUM_LAYERS << endl;
     for (int layer = 0; layer < NUM_LAYERS; layer++) {
         cout << "Layer " << layer + 1<<  endl;
+        cout << "SIZE: " << LAYERS[layer].size() << endl;
         auto it = LAYERS[layer].begin();
         while(it != LAYERS[layer].end()) {
             cout << "NODE: "<<  endl;
