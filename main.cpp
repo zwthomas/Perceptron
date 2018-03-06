@@ -32,8 +32,7 @@ int main(int argc, char *argv[]) {
     srand(time(NULL));
     string f = "";
     int NUM_NODES[] = {1};
-    Network net(NUM_LAYERS, NUM_NODES, NUM_IN);
-    //Network *net = new Network(NUM_LAYERS, NUM_NODES, NUM_IN);
+    Network *net = new Network(NUM_LAYERS, NUM_NODES, NUM_IN);
     int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
     int **outputs;
 
@@ -47,13 +46,8 @@ int main(int argc, char *argv[]) {
         outputs = readOutput("xorOutput.txt", CASES, NUM_OUT);
         int XORNODES[] = {2,1};
         cout << "xor:" << endl;
-        //delete(net);
-        Network net(2, XORNODES, NUM_IN);
-
-        cout<< "\n\n\n" << endl;
-        net.displayNetwork();
-        net.feedForward(inputs, outputs, CASES, NUM_IN, NUM_OUT, f);
-        net.displayNetwork();
+        delete(net);
+        net = new Network(2, XORNODES, NUM_IN);
 
     } else {
         cout << "No match" <<endl;
@@ -62,8 +56,8 @@ int main(int argc, char *argv[]) {
 
 //    double test[] = {-.8,.5,.5};
 //    net.setWeight(0,0, test);
-//    net.feedForward(inputs, outputs, CASES, NUM_IN, NUM_OUT, f);
-//    net.displayNetwork();
+    net->feedForward(inputs, outputs, CASES, NUM_IN, NUM_OUT, f);
+    net->displayNetwork();
 
 }
 

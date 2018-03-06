@@ -33,14 +33,12 @@ Perceptron::Perceptron(int inputs) {
  * Displays the weights in the perceptron for debugging purposes.
  */
 void Perceptron::displayWeights() {
-    cout<< "display weights" << endl;
     list<double>::iterator it = weights.begin();
     while (it != weights.end()) {
         cout << (*it++) << " ";
     }
     cout << endl;
 
-    cout << "end of weight" << endl;
 }
 
 /**
@@ -94,6 +92,11 @@ void Perceptron::adjust(double learningRate, int numOutput, int *output, list<in
         for (int ndx = 0; ndx < numOutput; ndx++) { // Adjust for each of the outputs
             DEBUG_PRINT("LR: " << learningRate << " CORRECTOUT: " << output[ndx] <<  " GENOUT: " << (*outputIt) << " input: " << in)
             (*weightIt) +=  learningRate * (double) (output[ndx] - (*outputIt++)) * (in);
+            if (*weightIt > 1) {
+                *weightIt = 1;
+            } else if (*weightIt < 0 && *weightIt < -1) {
+                *weightIt = -1;
+            }
         }
         weightIt++;
     }

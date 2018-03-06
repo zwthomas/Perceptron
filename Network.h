@@ -26,7 +26,8 @@ private:
     std::list<int>* fillInputs(int *inputs, int numInputs);
     bool checkOutputs(std::list<int> *generatedOutputs, int *correctOutputs, int numOutputs);
     void adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput, int *input);
-
+    void backProp(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput, int *input);
+    std::list<int>* createDeltas(int *output, std::list<int> *generatedOutputs, int numOutput);
 
 };
 
