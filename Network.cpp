@@ -7,6 +7,7 @@
 #include "Network.h"
 #include <iostream>
 #include <unistd.h>
+#include <cstring>
 
 using namespace std;
 
@@ -22,16 +23,16 @@ Network::Network(int numLayers, int numNodes[], int numInputs) {
     NUM_LAYERS = numLayers;
     NUM_NODES = numNodes;
     NUM_INPUTS = numInputs;
-    LAYERS = new list<Perceptron>[numLayers];
+    LAYERS = new Perceptron*[numLayers];
     for (int layerCount = 0; layerCount < numLayers; layerCount++) {                // Creates each layer
+        LAYERS[layerCount] = new Perceptron(numNodes[layerCount]);
+
         for (int nodeCount = 0; nodeCount < numNodes[layerCount]; nodeCount++) {    // Creates each node in the layer
             if (layerCount == 0) {
-                Perceptron p = Perceptron(numInputs);
-                LAYERS[layerCount].push_back(p);                // Number of inputs in first layer
+                LAYERS[layerCount][nodeCount] = Perceptron(numInputs + 1);               // Number of inputs in first layer
                                                                                     // Depends on number of inputs
             } else {
-                Perceptron p = Perceptron(numNodes[layerCount - 1]);
-                LAYERS[layerCount].push_back(p); // Rest of rows depend on the previous
+                LAYERS[layerCount][nodeCount] = Perceptron(numNodes[layerCount - 1] + 1); // Rest of rows depend on the previous
             }
         }
     }
@@ -48,11 +49,12 @@ Network::~Network() {
  * Displays the weights in the network for debugging purposes.
  */
 void Network::displayNetwork() {
-    for (int layer = 0; layer < NUM_LAYERS; layer++) {
-        cout << "Layer " << layer << endl;
-        auto it = LAYERS[layer].begin();
-        while(it != LAYERS[layer].end()) {
-            it++->displayWeights();
+    for (int layerNdx = 0; layerNdx < NUM_LAYERS; layerNdx++) {
+        cout << "Layer " << layerNdx << ":" <<  endl;
+        for (int nodeNdx = 0; nodeNdx < NUM_NODES[layerNdx]; nodeNdx++) {
+            cout << "\tNode " << nodeNdx << " : ";
+            LAYERS[layerNdx][nodeNdx].displayWeights();
+            cout << endl;
         }
     }
 }
@@ -72,69 +74,100 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
     //DEBUG_EVAL(displayNetwork();)
 
     double lr = .1;
-    list<int> *ins;
-    list<int> *tempOuts;
+    int *inputsToLayer;
+    int *tempOuts;
+    int eval;
+    int **totalOutput;
 
     for (int row = 0; row < cases; row++) {                     // Passes in each row of input
-        ins = fillInputs(inputs[row], numInputs);
-        for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
-            tempOuts = new list<int>;
-            tempOuts->push_back(1);                             // Bias
+        totalOutput = new int*[NUM_LAYERS];
+        inputsToLayer = fillInputs(inputs[row], numInputs);
 
-            auto percep = LAYERS[layer].begin();                // Pass input to all nodes in the layer
-            while(percep != LAYERS[layer].end()) {
-                int eval = percep->eval(ins);
-                tempOuts->push_back(eval);         // Save the outputs for the input to the next row or final output
-                percep++;
+        for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
+            totalOutput[layer] = new int[NUM_NODES[layer] + 1];
+            tempOuts = new int[NUM_NODES[layer] + 1];
+            tempOuts[0] = 1;                                    // Bias
+            totalOutput[layer][0] = 1;
+
+            for (int perceptronNdx = 0; perceptronNdx < NUM_NODES[layer]; perceptronNdx++) {    // Go through all perceptrons in layer
+                eval = LAYERS[layer][perceptronNdx].eval(inputsToLayer);                        // Pass input to all nodes in the layer
+                totalOutput[layer][perceptronNdx + 1] = eval;
+                tempOuts[perceptronNdx + 1] = eval;
             }
-            delete(ins);
-            ins = tempOuts;
+
+            delete(inputsToLayer);
+            inputsToLayer = tempOuts;
         }
-        if (!checkOutputs(ins, outputs[row], outputNum)) {      // If the output is wrong adjust weights and start over
+        if (!checkOutputs(inputsToLayer, outputs[row], outputNum)) {      // If the output is wrong adjust weights and start over
             DEBUG_PRINT("Adjusting");
-            adjustLayers(outputs[row],ins, lr, outputNum, inputs[row]);
+            cout << "Adjusting" << endl;
+            backProp(outputs[row], totalOutput, outputNum, lr, inputs[row]);
             displayNetwork();
+            //adjustLayers(outputs[row],inputsToLayer, lr, outputNum, inputs[row]);
+            //displayNetwork();
             //sleep(2);
             //lr *= .9;
             row = -1;
         }
-        delete(ins);
-    }
-}
 
-void Network::backProp(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput, int *input) {
-    list<int> *ins;
-    list<int> *tempOuts;
-    list<int> *deltas = createDeltas(output, generatedOutputs, numOutput);
-    ins = fillInputs(input, NUM_INPUTS);
-
-    for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
-        tempOuts = new list<int>;
-        tempOuts->push_back(1);                             // Bias
-
-        auto percep = LAYERS[layer].begin();                // Pass input to all nodes in the layer
-        while(percep != LAYERS[layer].end()) {
-            int eval = percep->eval(ins);
-            tempOuts->push_back(eval);         // Save the outputs for the input to the next row or final output
-            percep++;
+        delete(inputsToLayer);
+        for (int ndx = 0; ndx < NUM_LAYERS; ndx++) {
+            delete(totalOutput[ndx]);
         }
-
-
-        auto percep = LAYERS[layer].begin();
-
-
-        delete(ins);
-        ins = tempOuts;
+        delete(totalOutput);
     }
-
 }
 
-std::list<int>* Network::createDeltas(int *output, std::list<int> *generatedOutputs, int numOutput) {
-    list<int> *deltas = new list<int>();
+void Network::backProp(int *output, int **allOutputs, int numOutput, double learningRate, int *input) {
+    double **allDeltas = new double*[NUM_LAYERS];
+    allDeltas[NUM_LAYERS - 1] = createDeltas(output, allOutputs[NUM_LAYERS - 1], numOutput);
 
-    auto it = generatedOutputs->begin();
+    for (int layerNdx = NUM_LAYERS - 2; layerNdx >= 0; layerNdx++) {
+        for (int nodeNdx = 0; nodeNdx < NUM_NODES[layerNdx]; nodeNdx++) {
+            double out = allOutputs[layerNdx][nodeNdx];
+            allDeltas[layerNdx][nodeNdx] =  out * (1 - out) * calcSum(allDeltas, layerNdx, nodeNdx);
+        }
+    }
+
+    for (int layerNdx = 0; layerNdx < NUM_LAYERS; layerNdx++) {
+        for (int nodeNdx = 0; nodeNdx < NUM_NODES[layerNdx]; nodeNdx++) {
+            adjustWeights(allDeltas, input, allOutputs, layerNdx, nodeNdx, learningRate);
+        }
+    }
+}
+
+void Network::adjustWeights(double **allDeltas, int *input, int **allOutputs, int layerNdx, int nodeNdx, double learningRate) {
+    double change;
+    for (int weightNdx = 0; weightNdx < LAYERS[layerNdx][nodeNdx].numWeight(); weightNdx++) {
+        int x;
+        if (layerNdx == 0) {
+            if (weightNdx == 0) {
+                x = 1;
+            } else {
+                x = input[weightNdx - 1];
+            }
+        } else {
+            x = allOutputs[layerNdx - 1][weightNdx];
+        }
+        change = LAYERS[layerNdx][nodeNdx].getWeight(weightNdx) + learningRate * allDeltas[layerNdx][nodeNdx] * x;
+        LAYERS[layerNdx][nodeNdx].setWeight(weightNdx, change);
+    }
+}
+
+double Network::calcSum(double **allDeltas, int layerNdx, int nodeNdx) {
+    double sum = 0;
+    for (int perceptronNdx = 0; perceptronNdx < NUM_NODES[layerNdx + 1]; perceptronNdx++) {
+        sum += LAYERS[perceptronNdx]->getWeight(nodeNdx) * allDeltas[layerNdx][perceptronNdx];
+    }
+    return sum;
+}
+
+double* Network::createDeltas(int *output, int *generatedOutputs, int numOutput) {
+    double *deltas = new double[numOutput];
+
+
     for (int ndx = 0; ndx < numOutput; ndx++) {
-       deltas->push_back((*it) * (1 - (*it)) * (output[ndx] - (*it++)));
+       deltas[ndx] = generatedOutputs[ndx+ 1] * (1 - generatedOutputs[ndx + 1]) * (output[ndx] - generatedOutputs[ndx + 1]);
     }
     return deltas;
 }
@@ -147,13 +180,11 @@ std::list<int>* Network::createDeltas(int *output, std::list<int> *generatedOutp
  * @param numInputs Number of inputs in that row
  * @return  the inputs for that row in a list
  */
-std::list<int> *Network::fillInputs(int *inputs, int numInputs) {
-    auto *inList = new list<int>();
-    inList->push_back(1);
-    for (int col = 0; col < numInputs; col++) {
-        inList->push_back(inputs[col]);
-    }
-    return inList;
+int *Network::fillInputs(int *inputs, int numInputs) {
+    int *temp = new int[numInputs + 1];
+    temp[0] = 1;                                    // Bias
+    memcpy(temp + 1,inputs, sizeof(int) * numInputs);
+    return temp;
 }
 
 /**
@@ -164,11 +195,10 @@ std::list<int> *Network::fillInputs(int *inputs, int numInputs) {
  * @param numOutputs        Number of outputs
  * @return  true if outputs match
  */
-bool Network::checkOutputs(std::list<int> *generatedOutputs, int *correctOutputs, int numOutputs) {
-    auto it = generatedOutputs->begin();
-    it++;                                           // Skip the bias
+bool Network::checkOutputs(int *generatedOutputs, int *correctOutputs, int numOutputs) {
+
     for (int ndx = 0; ndx < numOutputs; ndx++) {
-        if ((*it++) != correctOutputs[ndx]) {
+        if (generatedOutputs[ndx + 1] != correctOutputs[ndx]) {       // Skip the bias
             return false;
         }
     }
@@ -176,25 +206,25 @@ bool Network::checkOutputs(std::list<int> *generatedOutputs, int *correctOutputs
 }
 
 
-/**
- * Adjusts the weights of all the nodes in the network.
- *
- * @param output                correct output
- * @param generatedOutputs      generated output
- * @param learningRate          Multiplier to the change in the weight
- * @param numOutput             number of output
- */
-void Network::adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput, int *input) {
-    for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Goes through all Layers
-
-        auto percep = LAYERS[layer].begin();                // Goes through each of the nodes in each layer
-        while(percep != LAYERS[layer].end()) {
-            percep->adjust(learningRate, numOutput, output, generatedOutputs, input);
-            percep++;
-        }
-
-    }
-}
+///**
+// * Adjusts the weights of all the nodes in the network.
+// *
+// * @param output                correct output
+// * @param generatedOutputs      generated output
+// * @param learningRate          Multiplier to the change in the weight
+// * @param numOutput             number of output
+// */
+//void Network::adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput, int *input) {
+//    for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Goes through all Layers
+//
+//        auto percep = LAYERS[layer].begin();                // Goes through each of the nodes in each layer
+//        while(percep != LAYERS[layer].end()) {
+//            percep->adjust(learningRate, numOutput, output, generatedOutputs, input);
+//            percep++;
+//        }
+//
+//    }
+//}
 
 /**
  * For testing purposes. Allows to set the weights of individual nodes.
@@ -207,19 +237,12 @@ void Network::setWeight(int col, int row, double *w) {
     if (col >= NUM_LAYERS) {                        // Make sure the layer exists
         return;
     }
-    auto nodeIt = LAYERS[col].begin();              // Goes to the node
-    for (int nodeCount = 0; nodeCount < row && nodeIt != LAYERS[col].end(); nodeCount++) {
-        nodeIt++;
-    }
-    if (nodeIt != LAYERS[col].end()) {              // Makes sure node exists
-        nodeIt->setWeights(w);
+    if (row >= NUM_NODES[col]) {
+        return;
     }
 
+    LAYERS[col][row].setWeights(w);
 }
-
-
-
-
 
 
 

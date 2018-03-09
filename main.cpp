@@ -33,8 +33,13 @@ int main(int argc, char *argv[]) {
     string f = "";
     int NUM_NODES[] = {1};
     Network *net = new Network(NUM_LAYERS, NUM_NODES, NUM_IN);
+    net->displayNetwork();
     int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
     int **outputs;
+
+//    double *a = new double[3] {.3, .7, .1};
+//    net->setWeight(0,0,a);
+//    net->displayNetwork();
 
     if (file == "and") {
         cout << "and:" << endl;
@@ -48,16 +53,17 @@ int main(int argc, char *argv[]) {
         cout << "xor:" << endl;
         delete(net);
         net = new Network(2, XORNODES, NUM_IN);
+        net->displayNetwork();
 
     } else {
         cout << "No match" <<endl;
         return 1;
     }
 
-//    double test[] = {-.8,.5,.5};
-//    net.setWeight(0,0, test);
+////    double test[] = {-.8,.5,.5};
+////    net.setWeight(0,0, test);
     net->feedForward(inputs, outputs, CASES, NUM_IN, NUM_OUT, f);
-    net->displayNetwork();
+//    net->displayNetwork();
 
 }
 

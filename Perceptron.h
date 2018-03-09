@@ -22,13 +22,17 @@ class Perceptron {
 public:
     explicit Perceptron(int inputs);
     void displayWeights();
-    int eval(std::list<int> *in);
+    int eval(int *inputs);
     void adjust(double learningRate, int numOutput, int *output, std::list<int> *generatedOutput, int *input);
     void setWeights(double w[]);
+    double getWeight(int weightNdx);
+    int numWeight();
+    void setWeight(int weightNdx, double w);
 protected:
 
 private:
-    std::list<double> weights;
+    double *weights;
+    int numWeights;
 };
 
 #endif //PERCEPTRON_PERCEPTRON_H
