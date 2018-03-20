@@ -103,10 +103,11 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
             cout << "Adjusting" << endl;
             backProp(outputs[row], totalOutput, outputNum, lr, inputs[row]);
             displayNetwork();
+            //exit(1);
             //adjustLayers(outputs[row],inputsToLayer, lr, outputNum, inputs[row]);
             //displayNetwork();
             //sleep(2);
-            //lr *= .9;
+            lr *= .5;
             row = -1;
         }
 
