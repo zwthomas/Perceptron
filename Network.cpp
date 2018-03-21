@@ -123,6 +123,25 @@ void Network::backProp(int *output, int **allOutputs, int numOutput, double lear
     double **allDeltas = new double*[NUM_LAYERS];
     allDeltas[NUM_LAYERS - 1] = createDeltas(output, allOutputs[NUM_LAYERS - 1], numOutput);
 
+    cout << "Correct Output: \t";
+    for (int ndx = 0; ndx < numOutput; ndx++) {
+        cout << output[ndx] << " ";
+    }
+    cout << endl;
+    cout << "Gen Output: \t";
+    for (int ndx = 0; ndx < numOutput; ndx++) {
+        cout << allOutputs[NUM_LAYERS - 1][ndx] << " ";
+    }
+    cout << endl;
+
+    cout << "Deltas: \t";
+    for (int ndx = 0; ndx < numOutput; ndx++) {
+         cout << allDeltas[NUM_LAYERS - 1][ndx] << " ";
+    }
+    cout << endl;
+    cout.flush();
+    exit(1);
+
     for (int layerNdx = NUM_LAYERS - 2; layerNdx >= 0; layerNdx++) {
         for (int nodeNdx = 0; nodeNdx < NUM_NODES[layerNdx]; nodeNdx++) {
             double out = allOutputs[layerNdx][nodeNdx];

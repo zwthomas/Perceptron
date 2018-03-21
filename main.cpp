@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 
     if (file == "and") {
         cout << "and:" << endl;
-        outputs = readOutput("orOutput.txt", CASES, NUM_OUT);
+        outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
     } else if (file == "or") {
         cout << "or:" << endl;
         outputs = readOutput("orOutput.txt", CASES, NUM_OUT);
@@ -90,14 +90,14 @@ int** readInputs(string fileName, int cases, int numInputs) {
         }
     }
 
-//    cout << "\nINPUT" << endl;
-//    for (int row = 0; row < cases; row++) {     // Fill input table
-//        for (int col = 0; col < numInputs; col++) {
-//            cout << inputs[row][col] << " " ;
-//        }
-//        cout << endl;
-//    }
-//    cout << endl;
+    cout << "\nINPUT" << endl;
+    for (int row = 0; row < cases; row++) {     // Fill input table
+        for (int col = 0; col < numInputs; col++) {
+            cout << inputs[row][col] << " " ;
+        }
+        cout << endl;
+    }
+    cout << endl;
 
     return inputs;
 }
@@ -123,13 +123,13 @@ int** readOutput(string fileName, int cases, int numOutput) {
         }
     }
 
-//    cout << "\nout" << endl;
-//    for (int row = 0; row < cases; row++) {
-//        for (int col = 0; col < numOutput; col++) {
-//            cout <<  output[row][col] << " ";
-//        }
-//        cout << endl;
-//    }
-//    cout << endl;
+    cout << "\nOUT" << endl;
+    for (int row = 0; row < cases; row++) {
+        for (int col = 0; col < numOutput; col++) {
+            cout <<  output[row][col] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
     return output;
 }
