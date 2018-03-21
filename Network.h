@@ -23,13 +23,13 @@ private:
     int NUM_LAYERS;
     int *NUM_NODES;
     int NUM_INPUTS;
-    int* fillInputs(int *inputs, int numInputs);
-    bool checkOutputs(int *generatedOutputs, int *correctOutputs, int numOutputs);
+    double* fillInputs(int *inputs, int numInputs);
+    bool checkOutputs(double *generatedOutputs, int *correctOutputs, int numOutputs);
     void adjustLayers(int *output, int *generatedOutputs, double learningRate, int numOutput, int *input);
-    void backProp(int *output, int **allOutputs, int numOutput, double learningRate, int *input);
-    double* createDeltas(int *output, int *generatedOutputs, int numOutput);
+    void backProp(int *output, double **allOutputs, int numOutput, double learningRate, int *input);
+    double* createDeltas(int *output, double *generatedOutputs, int numOutput);
     double calcSum(double **allDeltas, int layerNdx, int nodeNdx);
-    void adjustWeights(double **allDeltas, int *input, int **allOutputs, int layerNdx, int nodeNdx, double learningRate);
+    void adjustWeights(double **allDeltas, int *input, double **allOutputs, int layerNdx, int nodeNdx, double learningRate);
 
 };
 

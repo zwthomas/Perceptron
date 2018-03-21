@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "Perceptron.h"
+#include <math.h>
 using namespace std;
 
 /**
@@ -46,18 +47,13 @@ void Perceptron::displayWeights() {
  * @param in    list of input values
  * @return      1 or -1
  */
-int Perceptron::eval(int *inputs) {
+double Perceptron::eval(double *inputs) {
     double sum = 0;
     for (int ndx = 0; ndx < numWeights; ndx++) {
         sum += weights[ndx] * inputs[ndx];
     }
 
-    DEBUG_PRINT("SUM: " << sum)
-    if (sum > 0) {
-        return 1;
-    } else {
-        return -1;
-    }
+    return 1 / (1 + exp(-1 *  sum));
 }
 double Perceptron::getWeight(int weightNdx) {
     return weights[weightNdx];

@@ -22,7 +22,7 @@ class Perceptron {
 public:
     explicit Perceptron(int inputs);
     void displayWeights();
-    int eval(int *inputs);
+    double eval(double *inputs);
     void adjust(double learningRate, int numOutput, int *output, std::list<int> *generatedOutput, int *input);
     void setWeights(double w[]);
     double getWeight(int weightNdx);

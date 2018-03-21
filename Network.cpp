@@ -74,18 +74,18 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
     //DEBUG_EVAL(displayNetwork();)
 
     double lr = .1;
-    int *inputsToLayer;
-    int *tempOuts;
-    int eval;
-    int **totalOutput;
+    double *inputsToLayer;
+    double *tempOuts;
+    double eval;
+    double **totalOutput;
 
     for (int row = 0; row < cases; row++) {                     // Passes in each row of input
-        totalOutput = new int*[NUM_LAYERS];
+        totalOutput = new double*[NUM_LAYERS];
         inputsToLayer = fillInputs(inputs[row], numInputs);
 
         for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
-            totalOutput[layer] = new int[NUM_NODES[layer] + 1];
-            tempOuts = new int[NUM_NODES[layer] + 1];
+            totalOutput[layer] = new double[NUM_NODES[layer] + 1];
+            tempOuts = new double[NUM_NODES[layer] + 1];
             tempOuts[0] = 1;                                    // Bias
             totalOutput[layer][0] = 1;
 
@@ -106,8 +106,8 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
             //exit(1);
             //adjustLayers(outputs[row],inputsToLayer, lr, outputNum, inputs[row]);
             //displayNetwork();
-            //sleep(2);
-            lr *= .5;
+            sleep(2);
+//            lr *= .5;
             row = -1;
         }
 
@@ -119,7 +119,7 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
     }
 }
 
-void Network::backProp(int *output, int **allOutputs, int numOutput, double learningRate, int *input) {
+void Network::backProp(int *output, double **allOutputs, int numOutput, double learningRate, int *input) {
     double **allDeltas = new double*[NUM_LAYERS];
     allDeltas[NUM_LAYERS - 1] = createDeltas(output, allOutputs[NUM_LAYERS - 1], numOutput);
 
@@ -156,7 +156,7 @@ void Network::backProp(int *output, int **allOutputs, int numOutput, double lear
     }
 }
 
-void Network::adjustWeights(double **allDeltas, int *input, int **allOutputs, int layerNdx, int nodeNdx, double learningRate) {
+void Network::adjustWeights(double **allDeltas, int *input, double **allOutputs, int layerNdx, int nodeNdx, double learningRate) {
     double change;
     for (int weightNdx = 0; weightNdx < LAYERS[layerNdx][nodeNdx].numWeight(); weightNdx++) {
         int x;
@@ -182,10 +182,10 @@ double Network::calcSum(double **allDeltas, int layerNdx, int nodeNdx) {
     return sum;
 }
 
-double* Network::createDeltas(int *output, int *generatedOutputs, int numOutput) {
+double* Network::createDeltas(int *output, double *generatedOutputs, int numOutput) {
     double *deltas = new double[numOutput];
 
-
+    cout << generatedOutputs[1] << " " <<  output[0] << endl;
     for (int ndx = 0; ndx < numOutput; ndx++) {
        deltas[ndx] = generatedOutputs[ndx+ 1] * (1 - generatedOutputs[ndx + 1]) * (output[ndx] - generatedOutputs[ndx + 1]);
     }
@@ -200,10 +200,10 @@ double* Network::createDeltas(int *output, int *generatedOutputs, int numOutput)
  * @param numInputs Number of inputs in that row
  * @return  the inputs for that row in a list
  */
-int *Network::fillInputs(int *inputs, int numInputs) {
-    int *temp = new int[numInputs + 1];
+double *Network::fillInputs(int *inputs, int numInputs) {
+    double *temp = new double[numInputs + 1];
     temp[0] = 1;                                    // Bias
-    memcpy(temp + 1,inputs, sizeof(int) * numInputs);
+    memcpy(temp + 1,inputs, sizeof(double) * numInputs);
     return temp;
 }
 
@@ -215,10 +215,17 @@ int *Network::fillInputs(int *inputs, int numInputs) {
  * @param numOutputs        Number of outputs
  * @return  true if outputs match
  */
-bool Network::checkOutputs(int *generatedOutputs, int *correctOutputs, int numOutputs) {
+bool Network::checkOutputs(double *generatedOutputs, int *correctOutputs, int numOutputs) {
 
     for (int ndx = 0; ndx < numOutputs; ndx++) {
-        if (generatedOutputs[ndx + 1] != correctOutputs[ndx]) {       // Skip the bias
+        int nodeOutput;
+        if (generatedOutputs[ndx + 1] >= .5) {
+            nodeOutput = 1;
+        } else {
+            nodeOutput = 0;
+        }
+
+        if (nodeOutput != correctOutputs[ndx]) {       // Skip the bias
             return false;
         }
     }
