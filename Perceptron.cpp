@@ -49,9 +49,12 @@ void Perceptron::displayWeights() {
  */
 double Perceptron::eval(double *inputs) {
     double sum = 0;
-    for (int ndx = 0; ndx < numWeights; ndx++) {
-        sum += weights[ndx] * inputs[ndx];
+    for (int ndx = 0; ndx < numWeights - 1; ndx++) {
+        sum += weights[ndx + 1] * inputs[ndx];
+        cout << "sum" << sum << " weights "<< weights[ndx] << " input "<< inputs[ndx] << endl;
     }
+    cout << "sum " << sum << endl;
+    cout <<"exp " << exp(-1 *  sum) << endl;
 
     return 1 / (1 + exp(-1 *  sum));
 }
