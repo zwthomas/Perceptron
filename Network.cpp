@@ -81,7 +81,16 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
 
     for (int row = 0; row < cases; row++) {                     // Passes in each row of input
         totalOutput = new double*[NUM_LAYERS];
-        inputsToLayer = fillInputs(inputs[row], numInputs);
+        inputsToLayer = fillInputs(inputs[row], numInputs);\
+
+        cout << "Case Number: " << row << endl;
+
+        cout << "Testing inputs: ";
+        for (int ndx = 0; ndx < numInputs + 1; ndx++) {
+            cout << inputsToLayer[ndx] << " ";
+
+        }
+        cout << endl;
 
         for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
             totalOutput[layer] = new double[NUM_NODES[layer] + 1];
@@ -106,7 +115,7 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
             //exit(1);
             //adjustLayers(outputs[row],inputsToLayer, lr, outputNum, inputs[row]);
             //displayNetwork();
-            sleep(2);
+            //sleep(2);
 //            lr *= .5;
             row = -1;
         }
@@ -140,7 +149,7 @@ void Network::backProp(int *output, double **allOutputs, int numOutput, double l
     }
     cout << endl;
     cout.flush();
-    exit(1);
+    //exit(1);
 
     for (int layerNdx = NUM_LAYERS - 2; layerNdx >= 0; layerNdx++) {
         for (int nodeNdx = 0; nodeNdx < NUM_NODES[layerNdx]; nodeNdx++) {
@@ -159,7 +168,7 @@ void Network::backProp(int *output, double **allOutputs, int numOutput, double l
 void Network::adjustWeights(double **allDeltas, int *input, double **allOutputs, int layerNdx, int nodeNdx, double learningRate) {
     double change;
     for (int weightNdx = 0; weightNdx < LAYERS[layerNdx][nodeNdx].numWeight(); weightNdx++) {
-        int x;
+        double x;
         if (layerNdx == 0) {
             if (weightNdx == 0) {
                 x = 1;
@@ -203,7 +212,10 @@ double* Network::createDeltas(int *output, double *generatedOutputs, int numOutp
 double *Network::fillInputs(int *inputs, int numInputs) {
     double *temp = new double[numInputs + 1];
     temp[0] = 1;                                    // Bias
-    memcpy(temp + 1,inputs, sizeof(double) * numInputs);
+
+    for (int ndx = 0; ndx < numInputs; ndx++) {     // Using memcopy caused nan error because different types
+        temp[ndx + 1] = inputs[ndx];
+    }
     return temp;
 }
 
@@ -222,7 +234,7 @@ bool Network::checkOutputs(double *generatedOutputs, int *correctOutputs, int nu
         if (generatedOutputs[ndx + 1] >= .5) {
             nodeOutput = 1;
         } else {
-            nodeOutput = 0;
+            nodeOutput = -1;
         }
 
         if (nodeOutput != correctOutputs[ndx]) {       // Skip the bias
