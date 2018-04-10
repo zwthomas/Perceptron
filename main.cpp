@@ -22,7 +22,7 @@ int** readOutput(string fileName, int cases, int numOutputs);
 
 int main(int argc, char *argv[]) {
     string file;
-    if (argc == 2) {
+    if (argc == 2) {                                                    // Get the name of the file containing the correct outputs
         file = argv[1];
     } else {
         cerr << "ERROR: Invalid number of command line arguments." << endl;
@@ -31,39 +31,32 @@ int main(int argc, char *argv[]) {
 
     srand(time(NULL));
     string f = "";
+
     int NUM_NODES[] = {1};
-    Network *net = new Network(NUM_LAYERS, NUM_NODES, NUM_IN);
-    net->displayNetwork();
-    int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);
+    Network *net = new Network(NUM_LAYERS, NUM_NODES, NUM_IN);          // Create the network
+    int **inputs = readInputs("LogicInput.txt", CASES, NUM_IN);         // Read in the input
     int **outputs;
 
-//    double *a = new double[3] {.3, .7, .1};
-//    net->setWeight(0,0,a);
-//    net->displayNetwork();
-
-    if (file == "and") {
+    if (file == "and") {                                                // Get the outputs from the desired file
         cout << "and:" << endl;
         outputs = readOutput("andOutput.txt", CASES, NUM_OUT);
     } else if (file == "or") {
         cout << "or:" << endl;
         outputs = readOutput("orOutput.txt", CASES, NUM_OUT);
     } else if (file == "xor") {
+        cout << "xor:" << endl;
         outputs = readOutput("xorOutput.txt", CASES, NUM_OUT);
         int XORNODES[] = {2,1};
-        cout << "xor:" << endl;
         delete(net);
-        net = new Network(2, XORNODES, NUM_IN);
+        net = new Network(2, XORNODES, NUM_IN);                         // Xor has different size network
         net->displayNetwork();
-
     } else {
         cout << "No match" <<endl;
         return 1;
     }
 
-////    double test[] = {-.8,.5,.5};
-////    net.setWeight(0,0, test);
-    net->feedForward(inputs, outputs, CASES, NUM_IN, NUM_OUT, f);
-//    net->displayNetwork();
+    net->feedForward(inputs, outputs, CASES, NUM_IN, NUM_OUT, f);       // Run the input through the network.
+    net->displayNetwork();
 
 }
 
@@ -90,15 +83,6 @@ int** readInputs(string fileName, int cases, int numInputs) {
         }
     }
 
-    cout << "\nINPUT" << endl;
-    for (int row = 0; row < cases; row++) {     // Fill input table
-        for (int col = 0; col < numInputs; col++) {
-            cout << inputs[row][col] << " " ;
-        }
-        cout << endl;
-    }
-    cout << endl;
-
     return inputs;
 }
 
@@ -123,13 +107,5 @@ int** readOutput(string fileName, int cases, int numOutput) {
         }
     }
 
-    cout << "\nOUT" << endl;
-    for (int row = 0; row < cases; row++) {
-        for (int col = 0; col < numOutput; col++) {
-            cout <<  output[row][col] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
     return output;
 }

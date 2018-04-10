@@ -70,9 +70,6 @@ void Network::displayNetwork() {
  * @param file      Filename to save the weights to
  */
 void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs, int outputNum, string file) {
-    DEBUG_PRINT("Entering feed")
-    //DEBUG_EVAL(displayNetwork();)
-
     double lr = .1;
     double *inputsToLayer;
     double *tempOuts;
@@ -81,16 +78,8 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
 
     for (int row = 0; row < cases; row++) {                     // Passes in each row of input
         totalOutput = new double*[NUM_LAYERS];
-        inputsToLayer = fillInputs(inputs[row], numInputs);\
+        inputsToLayer = fillInputs(inputs[row], numInputs);
 
-        cout << "Case Number: " << row << endl;
-
-        cout << "Testing inputs: ";
-        for (int ndx = 0; ndx < numInputs + 1; ndx++) {
-            cout << inputsToLayer[ndx] << " ";
-
-        }
-        cout << endl;
 
         for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Feeds the input and results through all of the layers
             totalOutput[layer] = new double[NUM_NODES[layer] + 1];
@@ -109,14 +98,7 @@ void Network::feedForward(int **inputs, int **outputs, int cases, int numInputs,
         }
         if (!checkOutputs(inputsToLayer, outputs[row], outputNum)) {      // If the output is wrong adjust weights and start over
             DEBUG_PRINT("Adjusting");
-            cout << "Adjusting" << endl;
             backProp(outputs[row], totalOutput, outputNum, lr, inputs[row]);
-            displayNetwork();
-            //exit(1);
-            //adjustLayers(outputs[row],inputsToLayer, lr, outputNum, inputs[row]);
-            //displayNetwork();
-            //sleep(2);
-//            lr *= .5;
             row = -1;
         }
 
@@ -132,26 +114,7 @@ void Network::backProp(int *output, double **allOutputs, int numOutput, double l
     double **allDeltas = new double*[NUM_LAYERS];
     allDeltas[NUM_LAYERS - 1] = createDeltas(output, allOutputs[NUM_LAYERS - 1], numOutput);
 
-    cout << "Correct Output: \t";
-    for (int ndx = 0; ndx < numOutput; ndx++) {
-        cout << output[ndx] << " ";
-    }
-    cout << endl;
-    cout << "Gen Output: \t";
-    for (int ndx = 0; ndx < numOutput; ndx++) {
-        cout << allOutputs[NUM_LAYERS - 1][ndx] << " ";
-    }
-    cout << endl;
-
-    cout << "Deltas: \t";
-    for (int ndx = 0; ndx < numOutput; ndx++) {
-         cout << allDeltas[NUM_LAYERS - 1][ndx] << " ";
-    }
-    cout << endl;
-    cout.flush();
-    //exit(1);
-
-    for (int layerNdx = NUM_LAYERS - 2; layerNdx >= 0; layerNdx++) {
+    for (int layerNdx = NUM_LAYERS - 2; layerNdx >= 0; layerNdx--) {
         for (int nodeNdx = 0; nodeNdx < NUM_NODES[layerNdx]; nodeNdx++) {
             double out = allOutputs[layerNdx][nodeNdx];
             allDeltas[layerNdx][nodeNdx] =  out * (1 - out) * calcSum(allDeltas, layerNdx, nodeNdx);
@@ -194,7 +157,6 @@ double Network::calcSum(double **allDeltas, int layerNdx, int nodeNdx) {
 double* Network::createDeltas(int *output, double *generatedOutputs, int numOutput) {
     double *deltas = new double[numOutput];
 
-    cout << generatedOutputs[1] << " " <<  output[0] << endl;
     for (int ndx = 0; ndx < numOutput; ndx++) {
        deltas[ndx] = generatedOutputs[ndx+ 1] * (1 - generatedOutputs[ndx + 1]) * (output[ndx] - generatedOutputs[ndx + 1]);
     }
@@ -244,26 +206,6 @@ bool Network::checkOutputs(double *generatedOutputs, int *correctOutputs, int nu
     return true;
 }
 
-
-///**
-// * Adjusts the weights of all the nodes in the network.
-// *
-// * @param output                correct output
-// * @param generatedOutputs      generated output
-// * @param learningRate          Multiplier to the change in the weight
-// * @param numOutput             number of output
-// */
-//void Network::adjustLayers(int *output, std::list<int> *generatedOutputs, double learningRate, int numOutput, int *input) {
-//    for (int layer = 0; layer < NUM_LAYERS; layer++) {      // Goes through all Layers
-//
-//        auto percep = LAYERS[layer].begin();                // Goes through each of the nodes in each layer
-//        while(percep != LAYERS[layer].end()) {
-//            percep->adjust(learningRate, numOutput, output, generatedOutputs, input);
-//            percep++;
-//        }
-//
-//    }
-//}
 
 /**
  * For testing purposes. Allows to set the weights of individual nodes.
